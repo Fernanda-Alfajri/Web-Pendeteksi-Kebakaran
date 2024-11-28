@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Sensor Kebakaran</title>
+    <link rel="stylesheet" href="tes2.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Monitor Kebakaran</h1>
+            <p>Monitoring status asap sensor</p>
+        </header>
+
+        <div class="status-card">
+            <h2>Status Sensor</h2>
+            <div id="status" class="status">Loading...</div>
+        </div>
+
+        <footer>
+            <p>&copy; 2024 Sistem Monitoring Kebakaran</p>
+        </footer>
+    </div>
+
+    <!-- Include Firebase SDK using type="module" -->
+    <script type="module">
+        // Firebase configuration
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+        import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBOqDbLc-_EDNuGfvNk8KddgRT6q_mFyw8",
+            authDomain: "monitoringkebakaran-6b635.firebaseapp.com",
+            databaseURL: "https://monitoringkebakaran-6b635-default-rtdb.asia-southeast1.firebasedatabase.app/",
+            projectId: "monitoringkebakaran-6b635",
+            storageBucket: "monitoringkebakaran-6b635.appspot.com",
+            messagingSenderId: "287563575252",
+            appId: "1:287563575252:web:3a8a7a8d08c3453457f0fd"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Reference to the smoke status path in Firebase
+        const statusRef = ref(database, 'smoke_status');
+
+        // Get real-time data from Firebase
+        onValue(statusRef, (snapshot) => {
+            const status = snapshot.val();
+            const statusElement = document.getElementById('status');
+
+            if (status === "ASAP BAHAYA") {
+                statusElement.textContent = "ASAP BAHAYA!";
+                statusElement.classList.add("bahaya");
+                statusElement.classList.remove("aman", "waspada");
+            } else if (status === "AMAN") {
+                statusElement.textContent = "Status: AMAN";
+                statusElement.classList.add("aman");
+                statusElement.classList.remove("bahaya", "waspada");
+            } else if (status === "WASPADA") {
+                statusElement.textContent = "Status: WASPADA";
+                statusElement.classList.add("waspada");
+                statusElement.classList.remove("aman", "bahaya");
+            } else {
+                statusElement.textContent = "Status: Tidak Diketahui";
+                statusElement.classList.remove("aman", "bahaya", "waspada");
+            }
+        });
+    </script>
+
+</body>
+</html>
